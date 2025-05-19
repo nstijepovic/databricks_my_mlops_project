@@ -1,5 +1,4 @@
 # This GitHub workflow sets up CI/CD workflows for a previously instantiated MLOps Stacks Project.
-
 name: Deploy CICD for Project Workflow
 
 on:
