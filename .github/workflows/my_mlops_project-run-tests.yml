@@ -54,4 +54,3 @@ jobs:
         id: training
         run: |
           databricks bundle run model_training_job -t test
-          
