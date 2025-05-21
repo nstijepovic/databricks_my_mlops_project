@@ -47,7 +47,7 @@ targets:
     variables:
       catalog_name: prod
     workspace:
-      host: https://adb-2300282961506735.15.azuredatabricks.net
+      host: https://adb-2300282961506735.15.azuredatabricks.net/
 
   test:
     variables:
