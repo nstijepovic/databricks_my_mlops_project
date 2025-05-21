@@ -41,7 +41,7 @@ targets:
     variables:
       catalog_name: staging
     workspace:
-      host: https://adb-2017361181410733.13.azuredatabricks.netgi
+      host: https://adb-2017361181410733.13.azuredatabricks.net/
 
   prod:
     variables:
