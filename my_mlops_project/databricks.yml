@@ -22,6 +22,7 @@ include:
   - ./resources/batch-inference-workflow-resource.yml
   - ./resources/ml-artifacts-resource.yml
   - ./resources/model-workflow-resource.yml
+  - ./resources/feature-engineering-workflow-resource.yml
   # TODO: uncomment once monitoring inference table has been created
   # - ./resources/monitoring-resource.yml
 
@@ -40,16 +41,17 @@ targets:
     variables:
       catalog_name: staging
     workspace:
-      host: https://adb-xxxx.xx.azuredatabricks.net
+      host: https://adb-2017361181410733.13.azuredatabricks.net
 
   prod:
     variables:
       catalog_name: prod
     workspace:
-      host: https://adb-xxxx.xx.azuredatabricks.net
+      host: https://adb-2300282961506735.15.azuredatabricks.net
 
   test:
     variables:
-      catalog_name: test
+      catalog_name: staging
     workspace:
-      host: https://adb-xxxx.xx.azuredatabricks.net
+      host: https://adb-2017361181410733.13.azuredatabricks.net
+      

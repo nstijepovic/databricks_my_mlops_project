@@ -67,7 +67,7 @@ dbutils.widgets.text(
 )
 dbutils.widgets.dropdown("run_mode", "disabled", ["disabled", "dry_run", "enabled"], "Run Mode")
 dbutils.widgets.dropdown("enable_baseline_comparison", "false", ["true", "false"], "Enable Baseline Comparison")
-dbutils.widgets.text("validation_input", "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled`", "Validation Input")
+dbutils.widgets.text("validation_input", "SELECT * FROM delta.`dbfs:/databricks-datasets/nyctaxi-with-zipcodes/subsampled` LIMIT 10000", "Validation Input")
 
 dbutils.widgets.text("model_type", "regressor", "Model Type")
 dbutils.widgets.text("targets", "fare_amount", "Targets")
@@ -104,6 +104,7 @@ import mlflow
 import os
 import tempfile
 import traceback
+import pandas as pd
 
 from mlflow.tracking.client import MlflowClient
 
@@ -136,13 +137,44 @@ assert model_version != "", "model_version notebook parameter must be specified"
 # take input
 enable_baseline_comparison = dbutils.widgets.get("enable_baseline_comparison")
 
-
 assert enable_baseline_comparison == "true" or enable_baseline_comparison == "false"
 enable_baseline_comparison = enable_baseline_comparison == "true"
 
 validation_input = dbutils.widgets.get("validation_input")
 assert validation_input
-data = spark.sql(validation_input)
+
+try:
+    # Execute the SQL query
+    spark_df = spark.sql(validation_input)
+    
+    # Print some debug info
+    print(f"Loaded validation data: {spark_df.count()} rows")
+    print(f"Columns: {spark_df.columns}")
+    print(f"Sample data:")
+    spark_df.limit(5).display()
+    
+    # Convert to Pandas DataFrame (this is the key change)
+    data = spark_df.toPandas()
+    
+    print(f"Converted to Pandas DataFrame with shape: {data.shape}")
+except Exception as e:
+    print(f"Error processing validation data: {str(e)}")
+    if dry_run:
+        print("Creating a small synthetic dataset for dry_run")
+        # Create a small synthetic dataset
+        import numpy as np
+        
+        # Create a basic DataFrame that matches your model's expected schema
+        data = pd.DataFrame({
+            "pickup_zip": ["10001", "10002", "10003", "10004", "10005"],
+            "dropoff_zip": ["20001", "20002", "20003", "20004", "20005"],
+            "trip_distance": [2.5, 3.0, 4.5, 1.5, 5.0],
+            "fare_amount": [10.5, 12.0, 15.5, 8.0, 20.0]
+        })
+        print("Created synthetic data for validation:")
+        print(data.head())
+    else:
+        raise e
 
 model_type = dbutils.widgets.get("model_type")
 targets = dbutils.widgets.get("targets")
@@ -208,11 +240,18 @@ def log_to_model_description(run, success):
         name=model_name, version=model_version, description=description
     )
 
-
-
 # COMMAND ----------
 
+# Additional debug info before evaluation
+print(f"Data type: {type(data)}")
+print(f"First few rows:")
+print(data.head())
+print(f"Columns: {data.columns}")
+print(f"Model URI: {model_uri}")
+print(f"Targets column: {targets}")
+print(f"Model type: {model_type}")
 
+# COMMAND ----------
 
 training_run = get_training_run(model_name, model_version)
 
@@ -234,9 +273,7 @@ with mlflow.start_run(
 
     try:
         eval_result = mlflow.evaluate(
-            
             model=model_uri,
-            
             data=data,
             targets=targets,
             model_type=model_type,

@@ -1,9 +1,13 @@
 new_cluster: &new_cluster
   new_cluster:
-    num_workers: 3
-    spark_version: 15.3.x-cpu-ml-scala2.12
-    node_type_id: Standard_D3_v2
-    data_security_mode: "SINGLE_USER"
+    spark_version: 16.4.x-scala2.12
+    node_type_id: Standard_D4s_v3
+    data_security_mode: "USER_ISOLATION"
+    runtime_engine: "PHOTON"
+    autoscale: {
+        "min_workers": 2,
+        "max_workers": 10
+    }
     custom_tags:
       clusterSource: mlops-stacks_0.4
 

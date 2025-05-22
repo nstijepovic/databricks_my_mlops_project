@@ -1,4 +1,14 @@
 # Databricks notebook source
+
+# COMMAND ----------
+%pip install -r ../../requirements.txt
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
 ##################################################################################
 # Generate and Write Features Notebook
 #
@@ -21,7 +31,6 @@
 # *
 # * features_transform_module (required) - Python module containing the feature transform logic.
 ##################################################################################
-
 
 # List of input args needed to run this notebook as a job.
 # Provide them via DB widgets or notebook arguments.
@@ -67,7 +76,6 @@ notebook_path =  '/Workspace/' + os.path.dirname(dbutils.notebook.entry_point.ge
 %cd $notebook_path
 %cd ../features
 
-# COMMAND ----------
 
 # DBTITLE 1,Define input and output variables
 input_table_path = dbutils.widgets.get("input_table_path")
