@@ -16,10 +16,10 @@ defaults:
 env:
   STAGING_ARM_TENANT_ID: ${{ secrets.STAGING_AZURE_SP_TENANT_ID }}
   STAGING_ARM_CLIENT_ID: ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}
-  STAGING_ARM_CLIENT_SECRET: ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}
+  # STAGING_ARM_CLIENT_SECRET: ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}
   PROD_ARM_TENANT_ID: ${{ secrets.PROD_AZURE_SP_TENANT_ID }}
   PROD_ARM_CLIENT_ID: ${{ secrets.PROD_AZURE_SP_APPLICATION_ID }}
-  PROD_ARM_CLIENT_SECRET: ${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}
+  # PROD_ARM_CLIENT_SECRET: ${{ secrets.PROD_AZURE_SP_CLIENT_SECRET }}
   
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
         env:
           ARM_TENANT_ID: ${{ env.STAGING_ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ env.STAGING_ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ env.STAGING_ARM_CLIENT_SECRET }}
+          # ARM_CLIENT_SECRET: ${{ env.STAGING_ARM_CLIENT_SECRET }}
           
         run: |
           databricks bundle validate -t staging | tee ../validate_output.txt
@@ -77,7 +77,7 @@ jobs:
         env:
           ARM_TENANT_ID: ${{ env.PROD_ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ env.PROD_ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ env.PROD_ARM_CLIENT_SECRET }}
+          # ARM_CLIENT_SECRET: ${{ env.PROD_ARM_CLIENT_SECRET }}
           
         run: |
           databricks bundle validate -t prod | tee ../validate_output.txt
